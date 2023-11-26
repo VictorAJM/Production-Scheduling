@@ -33,18 +33,35 @@ def readData(idx):
     line = file.readline()
     m,n = map(int,line.split())
     line = file.readline()
+    R = (n-m%n)%n
+    print(R)
     for i in range(n):
       line = file.readline()
       r = [int(num) for num in line.split()]
+      for _ in range(R):
+        r.append(0)
       t.append(r)
+
     for i in range(n):
       line = file.readline()
       aux = []
       for j in range(m):
         line = file.readline()
         r = [int(num) for num in line.split()]
+        for _ in range(R):
+          r.append(0)
+        aux.append(r)
+      for _ in range(R):
+        r = []
+        for __ in range(m+R):
+          if __ <= _+m:
+            r.append(1000)
+          else:
+            r.append(0)
         aux.append(r)
       c.append(aux)
+    m += R
+  print(n,m)   
   return
 
 
@@ -68,7 +85,21 @@ def value(list1):
       curAns+=t[i][k]
     ans = max(ans,curAns)
   return ans
-
+def value2(list1):
+  global n
+  global m
+  global t
+  global c
+  global answer
+  ans = 0
+  r = 0
+  for i in range(n):
+    z = 0
+    for j in list1:
+      if j==i:
+        z += 1
+    r = max(z,r)
+  return r
 def changeSomething(list1):
   global n
   global m
@@ -76,14 +107,44 @@ def changeSomething(list1):
   global c
   global answer
   # array of pairs, a.F means that the a.F index value will change for a.S
-  cambios = []
-  for i in range(m):
-    for j in range(n):
-      if j!=list1[i] and t[j][i]!=1000:
-        cambios.append([i,j])
-  cambio = random.choice(cambios)
-  list1[cambio[0]] = cambio[1]
+  q = random.randint(0,m-1)
+  w = random.randint(0,m-1)
+  while q==w:
+    w = random.randint(0,m-1)
+  list1[q],list1[w] = list1[w],list1[q]
   return list1
+def validate(list1):
+  global n
+  global m
+  global t
+  global c
+  for i in range(m):
+    if t[list1[i]][i]==1000:
+      return False
+  return True
+def fixing(list1):
+  q = random.randint(0,m-1)
+  w = random.randint(0,m-1)
+  while q==w:
+    w = random.randint(0,m-1)
+  list1[q],list1[w] = list1[w],list1[q]
+  while validate(list1)==False:
+    q = random.randint(0,m-1)
+    w = random.randint(0,m-1)
+    while q==w:
+      w = random.randint(0,m-1)
+  return list1
+def G():
+  global n
+  global m
+  global t
+  global c
+  gg = []
+  for i in range(m):
+    gg.append(i%n)
+  while validate(gg)==False:
+    gg = fixing(gg)
+  return gg
 
 def recocido():
   global n
@@ -93,19 +154,14 @@ def recocido():
   global answer
   # crear answer, primera solucion valida
   # solo movernos entre soluciones validas
-  answer = [-1]*m
-  for i in range(m):
-    g = []
-    for j in range(n):
-      if t[j][i]!=1000:
-        g.append(j)
-    answer[i]=random.choice(g)
+  answer = G()
+
 
 
   #temperatura inicial,alpha e iteraciones maximas
   # Estos son los valores que deben modificar y hacer las pruebas
-  T = 10**20
-  alpha = 0.997
+  T = 10**30
+  alpha = 0.99
   K = 100000
   # codigo para el recocido simulado
   bestAns = answer
@@ -115,7 +171,7 @@ def recocido():
     for i in answer:
       copia.append(i)
     new = changeSomething(copia)
-    if value(new)<=value(answer):
+    if value(new)<value(answer) or (value2(new)<=value2(answer) and value(new)==value(answer)):
       answer = new
     else:
       r = random.random()
@@ -136,7 +192,7 @@ if __name__=="__main__":
     readData(i)
     r = 10203120321
     finalAnswer = []
-    for j in range(20):
+    for j in range(10):
       answer = recocido()
       if value(answer)<r:
         r = value(answer)
