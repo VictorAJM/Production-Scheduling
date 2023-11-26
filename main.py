@@ -79,7 +79,7 @@ def changeSomething(list1):
   cambios = []
   for i in range(m):
     for j in range(n):
-      if j!=list1[i]:
+      if j!=list1[i] and t[j][i]!=1000:
         cambios.append([i,j])
   cambio = random.choice(cambios)
   list1[cambio[0]] = cambio[1]
@@ -129,12 +129,16 @@ def recocido():
       bestAns = answer
     T *= alpha
     K = K-1
-  return ans
+  return bestAns
 if __name__=="__main__":
-  for i in range(3,4):
+  for i in range(1,11):
     resetVars()
     readData(i)
-    r = 1000000000
+    r = 10203120321
+    finalAnswer = []
     for j in range(20):
-      r = min(r,recocido())
-      print(r)
+      answer = recocido()
+      if value(answer)<r:
+        r = value(answer)
+        finalAnswer = answer
+        print('for case ',i,' ',r,finalAnswer)
