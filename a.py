@@ -105,8 +105,8 @@ def recocido():
   #temperatura inicial,alpha e iteraciones maximas
   # Estos son los valores que deben modificar y hacer las pruebas
   T = 10**20
-  alpha = 0.997
-  K = 100000
+  alpha = 0.99
+  K = 10000
   # codigo para el recocido simulado
   bestAns = answer
   ans = value(answer)
@@ -117,6 +117,7 @@ def recocido():
     new = changeSomething(copia)
     if value(new)<=value(answer):
       answer = new
+      K = K-1
     else:
       r = random.random()
       try:
@@ -124,11 +125,12 @@ def recocido():
           answer = new
       except:
         pass
+      T *= alpha
+      K = K-1
     if value(answer)<ans:
       ans = value(answer)
       bestAns = answer
-    T *= alpha
-    K = K-1
+
   return bestAns
 if __name__=="__main__":
   for i in range(1,11):

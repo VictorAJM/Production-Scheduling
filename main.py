@@ -100,19 +100,7 @@ def value2(list1):
         z += 1
     r = max(z,r)
   return r
-def changeSomething(list1):
-  global n
-  global m
-  global t
-  global c
-  global answer
-  # array of pairs, a.F means that the a.F index value will change for a.S
-  q = random.randint(0,m-1)
-  w = random.randint(0,m-1)
-  while q==w:
-    w = random.randint(0,m-1)
-  list1[q],list1[w] = list1[w],list1[q]
-  return list1
+
 def validate(list1):
   global n
   global m
@@ -122,17 +110,44 @@ def validate(list1):
     if t[list1[i]][i]==1000:
       return False
   return True
-def fixing(list1):
+def changeSomething(list1):
+  global n
+  global m
+  global t
+  global c
+  global answer
+  # array of pairs, a.F means that the a.F index value will change for a.S
   q = random.randint(0,m-1)
   w = random.randint(0,m-1)
-  while q==w:
-    w = random.randint(0,m-1)
+  list1[q],list1[w] = list1[w],list1[q] 
+  while validate(list1)==False:
+    for i in range(m):
+      if t[list1[i]][i]==1000:
+        q = i
+        w = random.randint(0,m-1)
+        while t[list1[w]][w]==1000:
+          w = random.randint(0,m-1)
+    list1[q],list1[w] = list1[w],list1[q]
+  return list1
+def fixing(list1):
+  q = 0
+  w = 0
+  for i in range(m):
+    if t[list1[i]][i]==1000:
+      q = i
+      w = random.randint(0,m-1)
+      while t[list1[w]][w]==1000:
+        w = random.randint(0,m-1)
+
   list1[q],list1[w] = list1[w],list1[q]
   while validate(list1)==False:
-    q = random.randint(0,m-1)
-    w = random.randint(0,m-1)
-    while q==w:
-      w = random.randint(0,m-1)
+    for i in range(m):
+      if t[list1[i]][i]==1000:
+        q = i
+        w = random.randint(0,m-1)
+        while t[list1[w]][w]==1000:
+          w = random.randint(0,m-1)
+    list1[q],list1[w] = list1[w],list1[q]
   return list1
 def G():
   global n
@@ -155,14 +170,13 @@ def recocido():
   # crear answer, primera solucion valida
   # solo movernos entre soluciones validas
   answer = G()
-
-
+  print("*")
 
   #temperatura inicial,alpha e iteraciones maximas
   # Estos son los valores que deben modificar y hacer las pruebas
   T = 10**30
   alpha = 0.99
-  K = 100000
+  K = 25000
   # codigo para el recocido simulado
   bestAns = answer
   ans = value(answer)
@@ -173,6 +187,7 @@ def recocido():
     new = changeSomething(copia)
     if value(new)<value(answer) or (value2(new)<=value2(answer) and value(new)==value(answer)):
       answer = new
+      K = K-1
     else:
       r = random.random()
       try:
@@ -180,14 +195,15 @@ def recocido():
           answer = new
       except:
         pass
+      T *= alpha
+      K = K-1
     if value(answer)<ans:
       ans = value(answer)
       bestAns = answer
-    T *= alpha
-    K = K-1
+
   return bestAns
 if __name__=="__main__":
-  for i in range(1,11):
+  for i in range(9,11):
     resetVars()
     readData(i)
     r = 10203120321
