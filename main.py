@@ -170,17 +170,15 @@ def recocido():
   # crear answer, primera solucion valida
   # solo movernos entre soluciones validas
   answer = G()
-  print("*")
-
   #temperatura inicial,alpha e iteraciones maximas
   # Estos son los valores que deben modificar y hacer las pruebas
-  T = 10**30
-  alpha = 0.99
-  K = 25000
+  T = 8
+  alpha = 0.9995
+  K = 30000
   # codigo para el recocido simulado
   bestAns = answer
   ans = value(answer)
-  while K>0 and T>0.01:
+  while K>0 and T>0.001:
     copia = []
     for i in answer:
       copia.append(i)
@@ -203,14 +201,16 @@ def recocido():
 
   return bestAns
 if __name__=="__main__":
-  for i in range(9,11):
-    resetVars()
-    readData(i)
-    r = 10203120321
-    finalAnswer = []
-    for j in range(10):
-      answer = recocido()
-      if value(answer)<r:
-        r = value(answer)
-        finalAnswer = answer
-        print('for case ',i,' ',r,finalAnswer)
+  for j in range(1,21):
+    for i in range(10,11):
+      resetVars()
+      readData(i)
+      r = 10203120321
+      finalAnswer = []
+      for j in range(5):
+        answer = recocido()
+        if value(answer)<r:
+          r = value(answer)
+          finalAnswer = answer
+
+      print(answer,value(answer))
